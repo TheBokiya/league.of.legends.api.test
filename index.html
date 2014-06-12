@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>TheBokiya</title>
+    <link rel="stylesheet" type="text/css" href="css/league.css">
+</head>
+
+<body>
+    <div class="block">
+        <div class="centered">
+            <h1>TheBokiya's League of Legends Stats</h1>
+            <h2>Summoner's Rift</h2>
+            <ul>
+                <li>
+                    <img src="img/win-icon.png">
+                    <p class="stats" id="win"></p>
+                </li>
+                <li>
+                    <img src="img/kill-icon.png">
+                    <p class="stats" id="kill"></p>
+                </li>
+                <li>
+                    <img src="img/assist-icon.png">
+                    <p class="stats" id="assist"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p class="foot">The data is being fetched every minute. Last updated:
+            <span id='last-update'></span>
+        </p>
+
+    </footer>
+
+    <script type="text/javascript">
+    function updateData() {
+        var xhr = new XMLHttpRequest();
+        var requestURL = "https://na.api.pvp.net/api/lol/na/v1.3/stats/by-summoner/28499443/summary?season=SEASON4&api_key=[api_key here]";
+        xhr.open("GET", requestURL, true);
+        xhr.onload = function(e) {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    document.getElementById("win").innerHTML = "Wins: <b>" + json.playerStatSummaries[8].wins + "</b>";
+                    document.getElementById("kill").innerHTML = "Kills: <b>" + json.playerStatSummaries[8].aggregatedStats.totalChampionKills + "</b>";
+                    document.getElementById("assist").innerHTML = "Assits: <b>" + json.playerStatSummaries[8].aggregatedStats.totalAssists + "</b>";
+                } else {
+                    console.error(xhr.statusText);
+                }
+            }
+        };
+        xhr.onerror = function(e) {
+            console.error(xhr.statusText);
+        };
+        xhr.send(null);
+        document.getElementById('last-update').innerHTML = new Date();
+    }
+
+    updateData();
+
+    // Refreshes the page every 1 minute
+    setInterval(updateData, 60000);
+    </script>
+</body>
+
+</html>
